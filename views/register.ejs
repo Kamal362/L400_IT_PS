@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('./partials/header') %> 
+</head>
+<body>
+
+  <div class="phase">
+    <h1> IT L400 Portal-System </h1>
+    <img src="./image/logo.png" alt="" width="200px" height="100px"/>
+  </div>
+
+  <!--this was where i begun with the login form-->
+
+  <div class="box">
+    <h3 id="msg"><%= message %></h3>
+  	<h2>REGIS<span>TER</span></h2>
+  	<form action="register" method="post">
+  		<div class="inputbox">
+  			<input type="text" name="username" required="">
+  			<label>Username</label>
+  		</div>
+          <div class="inputbox">
+            <input type="text" name="index_number" required="">
+            <label>Index Number</label>
+        </div>
+  		<div class="inputbox">
+  			<input type="password" name="password" required="">
+  			<label>New Password</label>
+  		</div>
+          <div class="inputbox">
+            <input type="password" name="c_password" required="">
+            <label>Confirm Password</label>
+        </div>
+  		<input type="submit" value="Register">
+      <button><a href="<%= login %> ">Login</a></button>
+     <!-- <input type="submit" name="" value="logout" border="left" >-->
+  	</form> 
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- include('./partials/header') %> 
+	<style>
+		div{
+			width: 50%;
+			margin: 0 auto;
+            padding:10px 20px;
+			text-align: center;
+			justify-content: center;
+			border: none;
+			box-sizing: border-box;
+			box-shadow: 1px 2px 3px 2px #ccc;
+		}
+	</style>
+</head>
+<body>
+  <div>
+	<h1>hello <%= name %> </h1>
+	<p>welcome to our portal system...</p>
+	<button><a href="<%= login %> ">Logout</a></button>
+  </div>	
+</body>
+</html>
