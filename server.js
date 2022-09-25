@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken')
 const morgan = require('morgan')
 const bodyparser = require('body-parser')
 const { render } = require('ejs')
+const mongoose = require('mongoose')
+const Student = require('./models/student')
+const port = process.env.PORT || 3000
 
 app.set('view engine', 'ejs')
 app.use(express.json())
@@ -14,22 +17,13 @@ app.use(morgan('dev'))
 app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 
-let id 
-const students = [
-  {
-    id: 0.029075364612826782,
-    username: 'Samson',
-    index_number: 'PS/ITC/18/0001',
-    password: 'Aboagye124'
-  },
-  {
-    id: 0.9626443794717934,
-    username: 'Angela',
-    index_number: 'PS/ITC/18/0011',
-    password: 'Angela1234'
-  }
-]
 
+// connecting to db
+mongoose.connect(process.env.DB_URL)
+//mongoose.connect(db_url)
+.then(app.listen(port, () => console.log(`app listening to port ${port}...`)))
+.then((result) => console.log("database successfully connected..."))
+.catch((err) => console.log('not able to connect to the database '+ err))
 
 // registration route
 app.get('/register', (req, res, next)=>{
@@ -42,19 +36,24 @@ app.get('/register', (req, res, next)=>{
 
 // add user route
 app.post('/register', (req, res, next)=>{
-  students.push({
+  const student = new Student({
     id: Math.random(),
     username: req.body.username,
-    index_numaber: req.body.index_number,
+    index_number: req.body.index_number,
     password: req.body.password
   })
+  student.save()
+   .then(result => {console.log('User added successfully') })
+   .catch(err => { console.log('user not add '+ err) })
+
   res.render('login', {
     login: 'login', 
     register: 'register',
     message: "Registration successful, kindly login ✅",
     error: ""
    })
-   console.log(students)
+   
+   console.log(student)
 })
 
 // add success route
@@ -78,32 +77,29 @@ app.get('/login', (req, res, next)=>{
 })
 
 // login verification
-app.post('/login', (req, res, next) => {
-  students.find( student => {
-    if(student.username === req.body.username && student.password === req.body.password){
-      console.log(student)
-      return res.render('success', {
-         name: student.username,
-         login: 'login'
-      })  
-    }
+app.post('/login', async  (req, res, next) => {
+  const query = await Student.findOne({
+    username: req.body.username,
+    password: req.body.password
   })
-  if(!students.includes(req.body.username)){
-    return res.render('login', {
-    login: 'login', 
-    register: 'register',
-    message: "",
-    error: "User not found! please register ⛔️"
-  })
-}
+        
+   console.log(query)
+  if(query){
+    console.log("User exist..")
+    return res.render('success',{
+      name: req.body.username,
+      login: 'login'       
+    })
+  }else{
+    res.render('login', {
+       login: 'login', 
+       register: 'register',
+       message: "",
+       error: "User not found! please register ⛔️"
+    })
+  }
   next()
 })
-
-// app listening to port 3000 
-app.listen(3000, (err, res) => {
-   if(err)
-     console.log(err)
-   console.log('app listening to port 3000 ...')  
 
 // // query student route
 // app.post('/login', (req, res, next)=>{
@@ -175,5 +171,3 @@ app.listen(3000, (err, res) => {
 //     next()
 //   })
 // } 
-
-})
